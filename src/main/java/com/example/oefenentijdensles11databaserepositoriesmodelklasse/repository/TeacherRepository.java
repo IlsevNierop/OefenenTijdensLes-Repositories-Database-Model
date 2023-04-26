@@ -8,4 +8,5 @@ import java.time.LocalDate;
 public interface TeacherRepository extends CrudRepository<Teacher, Long> {
 
     Iterable<Teacher> findByDobBefore(LocalDate date);
+
 }

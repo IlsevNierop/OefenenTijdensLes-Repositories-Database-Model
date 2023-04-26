@@ -24,6 +24,10 @@ public class StudentController {
     public ResponseEntity<Iterable<Student>> getStudentsByNameSubstring(@RequestParam String substringName){
         return ResponseEntity.ok(repos.findByFullNameContainingIgnoreCase(substringName));
     }
+    @GetMapping("/nameandsort")
+    public ResponseEntity<Iterable<Student>> getStudentsByNameSubstringOrderByFullName(@RequestParam String substringName){
+        return ResponseEntity.ok(repos.findByFullNameContainingIgnoreCaseOrderByFullName(substringName));
+    }
 
 
     @PostMapping

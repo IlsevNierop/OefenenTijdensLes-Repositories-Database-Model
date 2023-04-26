@@ -26,6 +26,11 @@ public class TeacherController {
     public ResponseEntity<Iterable<Teacher>> getTeachersBefore(@RequestParam LocalDate date){
         return ResponseEntity.ok(repos.findByDobBefore(date));
     }
+    @GetMapping("/age")
+    public ResponseEntity<Iterable<Teacher>> getTeachersByAge(@RequestParam int age){
+        LocalDate date =  LocalDate.now().plusYears(-age);
+        return ResponseEntity.ok(repos.findByDobBefore(date));
+    }
 
     @PostMapping
     public ResponseEntity<Teacher> createTeacher(@RequestBody Teacher t) {
