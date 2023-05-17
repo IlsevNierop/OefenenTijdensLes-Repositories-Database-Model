@@ -3,7 +3,9 @@ package com.example.oefenentijdensles11databaserepositoriesmodelklasse.service;
 import com.example.oefenentijdensles11databaserepositoriesmodelklasse.dto.TeacherDto;
 import com.example.oefenentijdensles11databaserepositoriesmodelklasse.exception.NameDuplicateException;
 import com.example.oefenentijdensles11databaserepositoriesmodelklasse.exception.ResourceNotFoundException;
+import com.example.oefenentijdensles11databaserepositoriesmodelklasse.model.Course;
 import com.example.oefenentijdensles11databaserepositoriesmodelklasse.model.Teacher;
+import com.example.oefenentijdensles11databaserepositoriesmodelklasse.repository.CourseRepository;
 import com.example.oefenentijdensles11databaserepositoriesmodelklasse.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +17,13 @@ import java.util.Optional;
 public class TeacherService {
 
     private final TeacherRepository repos;
+    private final CourseRepository courseRepository;
 
 
     // hiermee dwing je dat als er een teacherservice wordt aangemaakt, dat er dan ook een teacher repository wordt aangemaakt.
-   public TeacherService(TeacherRepository repos){
+   public TeacherService(TeacherRepository repos, CourseRepository courseRepository){
        this.repos = repos;
+       this.courseRepository = courseRepository;
    }
 
 
@@ -43,6 +47,20 @@ public class TeacherService {
        teacher.setDob(teacherDto.dob);
        teacher.setSalary(teacherDto.salary);
 
+       // deze werkt nog niet - de andere kant op werkt het wel
+        ArrayList<Course> teacherCourses = new ArrayList<>();
+
+        if (teacherDto.courseIds != null) {
+
+            for (Long courseId : teacherDto.courseIds) {
+                Course course = courseRepository.findById(courseId).get();
+                teacherCourses.add(course);
+            }
+
+            teacher.setCourses(teacherCourses);
+        }
+
+
        repos.save(teacher);
 
        return teacher.getId();
@@ -58,6 +76,11 @@ public class TeacherService {
        teacherDto.lastName= t.getLastName();
        teacherDto.dob= t.getDob();
        teacherDto.salary= t.getSalary();
+
+        for (Course c: t.getCourses()
+             ) {
+            teacherDto.courseTitles.add(c.getTitle());
+        }
        return teacherDto;
     }
 
@@ -72,6 +95,10 @@ public class TeacherService {
             teacherDto.lastName= t.getLastName();
             teacherDto.dob= t.getDob();
             teacherDto.salary= t.getSalary();
+            for (Course c: t.getCourses()
+            ) {
+                teacherDto.courseTitles.add(c.getTitle());
+            }
             teacherDtoArrayList.add(teacherDto);
         }
         return teacherDtoArrayList;

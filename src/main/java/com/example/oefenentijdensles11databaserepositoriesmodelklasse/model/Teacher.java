@@ -1,11 +1,10 @@
 package com.example.oefenentijdensles11databaserepositoriesmodelklasse.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table (name = "teachers")
@@ -17,6 +16,11 @@ public class Teacher {
     private String lastName;
     private LocalDate dob;
     private int salary;
+    @ManyToMany (mappedBy="teachers")
+    @JsonIgnore
+    // de teacher is nu de parent
+    // in de tabel van de courses wordt verwezen naar de teachers  (er wordt altijd vanuit de child naar de parent verwezen)
+    private List<Course> courses;
 
     public Long getId() {
         return id;
@@ -56,5 +60,13 @@ public class Teacher {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }
